@@ -1,0 +1,40 @@
+{{template "base" .}}
+
+{{define "content" }}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div id="output" class="mt-5" style="outline: 1px solid silver; padding: 2em;">
+                    <span class="text-muted">Output shows here...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    <script>
+    let output = document.getElementById("output");
+    let brokerURL = "{{.BrokerURL}}";
+
+    window.onload = function() {
+        const body = {
+            method: 'POST',
+        }
+
+        fetch(brokerURL, body)
+        .then((response) => response.json())
+        .then((data) => {
+            output.innerHTML = JSON.stringify(data, undefined, 4);
+            if (data.error) {
+                console.log(data.message);
+            } else {
+                output.innerHTML += `<br><strong>Response from broker service</strong>: ${data.message}`;
+            }
+        })
+        .catch((error) => {
+            output.innerHTML += "<br><br>Eror: " + error;
+        })
+    }
+    </script>
+{{end}}
